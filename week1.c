@@ -1,6 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <windows.h>
+#include <time.h> 
 
 void init();//콘솔창 등장 및 크기 조절
 void game();
@@ -8,7 +9,7 @@ int check(char sol[], char ans[], char ch);
 
 
 int main() {
-
+    srand(time(NULL));// 랜덤 시드 초기화
     init();
     game();
     getchar(); //계속하려면~~~ 안 보이게 하려고 임시로
@@ -27,23 +28,25 @@ void init() {
 
 void game() {
     int HP = 10; //생명 10개
-    char solution[100] = "happy friday"; //정답
-    char answer[100] = "_____ ______"; //플레이어가 입력할 곳 (현재까지 맞힌 것)
+    char solution[10][20] = { "apple","banana","orange","pineapple","source","queen","company","korea","chair","computer" }; // 정답
+    char answer[10][20] = { "_____", "______", "______", "_________", "______", "_____", "_______", "_____", "_____", "________" }; // 플레이어가 입력할 곳(현재까지 맞춘 것)
     char ch; //문자 입력 (맞히기)
+
+    int random = rand() % 10; // 0 ~ 9
 
 
     while (1) {
         for (int i = 1; i <= HP; i++) {
             printf("♥");
         }
-        printf("\n진행상황\n: %s\n", answer);
+        printf("\n진행상황\n: %s\n", answer[random]);
         printf("문자 입력: ");
         ch = getchar(); //getchar(): 입력한 문자 버퍼o, echo 즉 엔터 쳐야 전달됨
-        if (check(solution, answer, ch) == 1) { //1: 모든 문자 일치 정답! => 게임 종료 0: 이어서 입력받기
-            printf("정답! %s\n", answer);
+        if (check(solution[random], answer[random], ch) == 1) { //1: 모든 문자 일치 정답! => 게임 종료 0: 이어서 입력받기
+            printf("정답! %s\n", answer[random]);
             break;
         }
-        else if (check(solution, answer, ch) == 0) {
+        else if (check(solution[random], answer[random], ch) == 0) {
             HP -= 1;
         }
         if (HP == 0) {
@@ -54,18 +57,18 @@ void game() {
         }
     }
     
-int check(char sol[], char ans[], char ch) {//solution[], answer[], ch
+int check(char sol[], char ans[], char ch) {//solution[random][], answer[random][random][], ch
     int tmp = 0;
     for (int i = 0; sol[i] != 0; i++) {
-        if (sol[i] == ch) { //solution에 입력한 문자와 일치하는 것이 있다면
-            ans[i] = ch; //answer의 해당 위치에 문자 넣어주기(ex.____ -> __a_)
+        if (sol[i] == ch) { //solution[random]에 입력한 문자와 일치하는 것이 있다면
+            ans[i] = ch; //answer[random]의 해당 위치에 문자 넣어주기(ex.____ -> __a_)
             tmp = 1;
 
         }
     }
 
-    if (strcmp(sol, ans) == 0)return 1; //solution,answer 모든 문자 일치 정답!
+    if (strcmp(sol, ans) == 0)return 1; //solution[random],answer[random] 모든 문자 일치 정답!
     else if (tmp == 0) return 0;
-    else return 2; //solution에 있는 문자를 answer에 넣기
+    else return 2; //solution[random]에 있는 문자를 answer[random]에 넣기
 
 }
